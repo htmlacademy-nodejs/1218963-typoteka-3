@@ -1,7 +1,7 @@
 # Личный проект «Типотека» [![Build status][travis-image]][travis-url]
 
 * Студент: [Eugene Grushin](https://up.htmlacademy.ru/nodejs/3/user/1218963).
-* Наставник: `Неизвестно`.
+* Наставник: [Алексей Пушников](https://htmlacademy.ru/profile/id476723).
 
 ---
 
