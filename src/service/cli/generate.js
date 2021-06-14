@@ -13,7 +13,8 @@ const {
   TITLES,
   SumRestrict,
   DEFAULT_COUNT,
-  FILE_NAME
+  FILE_NAME,
+  ExitCode
 } = require(`../constants`);
 
 const generateOffers = (count) => (
@@ -34,9 +35,9 @@ module.exports = {
     const content = JSON.stringify(generateOffers(countOffer));
     fs.writeFile(FILE_NAME, content, (err) => {
       if (err) {
-        process.exit(1);
+        process.exit(ExitCode.error);
       }
-      process.exit(0);
+      process.exit(ExitCode.success);
     });
   }
 };
