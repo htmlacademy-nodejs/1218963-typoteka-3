@@ -4,7 +4,6 @@
   "description": "typoteka",
   "main": "./src/service/service.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/",
     "start": "node ./src/service/service.js"
@@ -22,5 +21,8 @@
   "devDependencies": {
     "eslint": "7.28.0",
     "eslint-config-htmlacademy": "0.6.0"
+  },
+  "dependencies": {
+    "chalk": "4.1.1"
   }
 }
