@@ -9,9 +9,6 @@ const {
 } = require(`../utils`);
 
 const {
-  // CATEGORIES,
-  // SENTENCES,
-  // TITLES,
   FILE_SENTENCES_PATH,
   FILE_TITLES_PATH,
   FILE_CATEGORIES_PATH,
