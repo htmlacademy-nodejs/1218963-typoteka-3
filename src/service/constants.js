@@ -3,6 +3,8 @@
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
+const DEFAULT_PORT = 3000;
+const FILENAME = `mocks.json`;
 
 const DEFAULT_COUNT = 1;
 const FILE_NAME = `mocks.json`;
@@ -27,5 +29,7 @@ module.exports = {
   FILE_CATEGORIES_PATH,
   SumRestrict,
   USER_ARGV_INDEX,
-  ExitCode
+  ExitCode,
+  DEFAULT_PORT,
+  FILENAME
 };
