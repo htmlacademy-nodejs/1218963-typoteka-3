@@ -5,7 +5,7 @@ const articlesRoutes = require(`./routes/articles-routes`);
 const myRoutes = require(`./routes/my-routes`);
 const mainRoutes = require(`./routes/main-routes`);
 
-const DEFAULT_PORT = 8080;
+const DEFAULT_PORT = 6065;
 
 const app = express();
 const path = require(`path`);
