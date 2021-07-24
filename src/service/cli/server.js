@@ -18,11 +18,12 @@ module.exports = {
   name: `--server`,
   run() {
     const express = require(`express`);
+    const port = 3000;
 
     const app = express();
     app.use(express.json());
 
-    app.get(`/categories`, async (req, res) => {
+    app.get(`/posts`, async (req, res) => {
       try {
         const fileContent = await fs.readFile(FILENAME);
         const mocks = JSON.parse(fileContent);
@@ -31,6 +32,7 @@ module.exports = {
         res.status(HttpCode.INTERNAL_SERVER_ERROR).send(err);
       }
     });
+    app.listen(port);
 
     app.use((req, res) => res
       .status(HttpCode.NOT_FOUND)
