@@ -3,9 +3,12 @@
 const FILE_SENTENCES_PATH = `./data/sentences.txt`;
 const FILE_TITLES_PATH = `./data/titles.txt`;
 const FILE_CATEGORIES_PATH = `./data/categories.txt`;
+const FILE_COMMENTS_PATH = `./data/comments.txt`;
 const DEFAULT_PORT = 3000;
 const FILENAME = `mocks.json`;
+const MAX_COMMENTS = 4;
 
+const MAX_ID_LENGTH = 6;
 const DEFAULT_COUNT = 1;
 const FILE_NAME = `mocks.json`;
 const DEFAULT_COMMAND = `--help`;
@@ -27,9 +30,12 @@ module.exports = {
   FILE_SENTENCES_PATH,
   FILE_TITLES_PATH,
   FILE_CATEGORIES_PATH,
+  FILE_COMMENTS_PATH,
   SumRestrict,
   USER_ARGV_INDEX,
   ExitCode,
   DEFAULT_PORT,
-  FILENAME
+  FILENAME,
+  MAX_ID_LENGTH,
+  MAX_COMMENTS
 };
