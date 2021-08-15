@@ -1,10 +1,6 @@
 'use strict';
 
-const fs = require(`fs`).promises;
-
-const {
-  FILENAME
-} = require(`../constants`);
+const API_PREFIX = `/api`;
 
 const HttpCode = {
   OK: 200,
@@ -15,27 +11,20 @@ const HttpCode = {
 };
 
 module.exports = {
+
   name: `--server`,
   run() {
     const express = require(`express`);
     const port = 3000;
+    const routes = require(`../api`);
 
     const app = express();
     app.use(express.json());
 
-    app.get(`/posts`, async (req, res) => {
-      try {
-        const fileContent = await fs.readFile(FILENAME);
-        const mocks = JSON.parse(fileContent);
-        res.json(mocks);
-      } catch (err) {
-        res.json([]);
-      }
-    });
-    app.listen(port);
-
     app.use((req, res) => res
       .status(HttpCode.NOT_FOUND)
       .send(`Not found`));
+    app.use(API_PREFIX, routes);
+    app.listen(port);
   }
 };
