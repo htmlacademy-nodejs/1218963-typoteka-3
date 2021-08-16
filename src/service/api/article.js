@@ -8,7 +8,7 @@ const {
 } = require(`../constants`);
 
 const articleValidator = require(`../middlewares/article-validator`);
-const articleExist = require(`../middlewares/article-exists`);
+// const articleExist = require(`../middlewares/article-exists`);
 // const routeParamsValidator = require(`../middlewares/route-params-validator`);
 
 const route = new Router();
@@ -77,15 +77,37 @@ module.exports = (app, articleService, commentService) => {
       .json(article);
   });
 
-  route.get(`/:articleId/comments`, [articleExist(commentService)], async (req, res) => {
+  route.get(`/:articleId/comments`, async (req, res) => {
     const {
       articleId
     } = req.params;
 
-    const comments = await commentService.findAll(articleId);
+    const comments = await commentService.findOne(articleId);
 
     res.status(HttpCode.OK)
       .json(comments);
 
+  });
+
+  route.delete(`/:articleId/comments/:commentId`, async (req, res) => {
+    const {articleId, commentId} = req.params;
+    const deleted = await commentService.drop(articleId, commentId);
+
+    if (!deleted) {
+      return res.status(HttpCode.NOT_FOUND)
+        .send(`Not found`);
+    }
+
+    return res.status(HttpCode.OK)
+      .json(deleted);
+  });
+
+  route.post(`/:articleId/comments`, async (req, res) => {
+    const {articleId} = req.params;
+
+    const comment = await commentService.create(articleId, req.body);
+
+    return res.status(HttpCode.CREATED)
+      .json(comment);
   });
 };
