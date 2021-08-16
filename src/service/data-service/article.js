@@ -1,53 +1,56 @@
-// 'use strict';
+'use strict';
 
-// const {
-//   MAX_ID_LENGTH
-// } = require(`../constants`);
+const {
+  MAX_ID_LENGTH
+} = require(`../constants`);
 
-// const {nanoid} = require(`nanoid`);
+const {
+  nanoid
+} = require(`nanoid`);
 
 
-// // eslint-disable-next-line no-unused-vars
-// class OfferService {
-//   constructor(offers) {
-//     this._offers = offers;
-//   }
+class ArticleService {
+  constructor(offers) {
+    this._offers = offers;
+  }
 
-//   create(offer) {
-//     const newOffer = Object
-//       .assign({
-//         id: nanoid(MAX_ID_LENGTH),
-//         comments: []
-//       }, offer);
+  create(offer) {
+    const newOffer = Object
+      .assign({
+        id: nanoid(MAX_ID_LENGTH),
+        comments: []
+      }, offer);
 
-//     this._offers.push(newOffer);
-//     return newOffer;
-//   }
+    this._offers.push(newOffer);
+    return newOffer;
+  }
 
-//   drop(id) {
-//     const offer = this._offers.find((item) => item.id === id);
+  drop(id) {
+    const offer = this._offers.find((item) => item.id === id);
 
-//     if (!offer) {
-//       return null;
-//     }
+    if (!offer) {
+      return null;
+    }
 
-//     this._offers = this._offers.filter((item) => item.id !== id);
-//     return offer;
-//   }
+    this._offers = this._offers.filter((item) => item.id !== id);
+    return offer;
+  }
 
-//   findAll() {
-//     return this._offers;
-//   }
+  findAll() {
+    return this._offers;
+  }
 
-//   findOne(id) {
-//     return this._offers.find((item) => item.id === id);
-//   }
+  findOne(id) {
+    return this._offers.find((item) => item.id === id);
+  }
 
-//   update(id, offer) {
-//     const oldOffer = this._offers
-//       .find((item) => item.id === id);
+  update(id, offer) {
+    const oldOffer = this._offers
+      .find((item) => item.id === id);
 
-//     return Object.assign(oldOffer, offer);
-//   }
+    return Object.assign(oldOffer, offer);
+  }
 
-// }
+}
+
+module.exports = ArticleService;

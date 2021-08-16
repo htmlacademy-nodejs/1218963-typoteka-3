@@ -21,10 +21,11 @@ module.exports = {
     const app = express();
     app.use(express.json());
 
+    app.use(API_PREFIX, routes);
+
     app.use((req, res) => res
       .status(HttpCode.NOT_FOUND)
       .send(`Not found`));
-    app.use(API_PREFIX, routes);
     app.listen(port);
   }
 };
