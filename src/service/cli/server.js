@@ -1,5 +1,7 @@
 'use strict';
 
+const express = require(`express`);
+
 const API_PREFIX = `/api`;
 
 const HttpCode = {
@@ -14,7 +16,6 @@ module.exports = {
 
   name: `--server`,
   run() {
-    const express = require(`express`);
     const port = 3000;
     const routes = require(`../api`);
 

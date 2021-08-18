@@ -9,22 +9,25 @@ const {
 
 const route = new Router();
 
-module.exports = (app, service) => {
+module.exports = (app, searchService) => {
   app.use(`/search`, route);
 
-  route.get(`/`, async (req, res) => {
-    const {
-      query = ``
-    } = req.query;
+  route.get(`/`, (req, res) => {
+    const query = req.query;
+
     if (!query) {
       res.status(HttpCode.BAD_REQUEST).json([]);
       return;
     }
 
-    const searchResults = await service.findAll(query);
-    const searchStatus = searchResults.length > 0 ? HttpCode.OK : HttpCode.NOT_FOUND;
+    const searchResults = searchService.findAll(query);
 
-    res.status(searchStatus)
+    if (!searchResults) {
+      res.status(HttpCode.NOT_FOUND)
+        .send(`Not found`);
+    }
+
+    res.status(HttpCode.OK)
       .json(searchResults);
   });
 };

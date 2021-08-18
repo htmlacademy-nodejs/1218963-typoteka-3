@@ -6,20 +6,20 @@ const {
 } = require(`../constants`);
 
 const schema = Joi.object({
-  articleId: Joi.number().integer().min(1),
-  commentId: Joi.number().integer().min(1)
+  text: Joi.string().min(20).required(),
+  userId: Joi.number().integer().positive().required()
 });
 
 module.exports = (req, res, next) => {
-  const params = req.params;
+  const comment = req.body;
 
   const {
     error
-  } = schema.validate(params);
-
+  } = schema.validate(comment);
   if (error) {
     return res.status(HttpCode.BAD_REQUEST)
       .send(error.details.map((err) => err.message).join(`\n`));
   }
+
   return next();
 };
