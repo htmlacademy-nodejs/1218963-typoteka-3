@@ -10,45 +10,45 @@ const {
 
 
 class ArticleService {
-  constructor(offers) {
-    this._offers = offers;
+  constructor(items) {
+    this._items = items;
   }
 
-  create(offer) {
-    const newOffer = Object
+  create(article) {
+    const newItem = Object
       .assign({
         id: nanoid(MAX_ID_LENGTH),
         comments: []
-      }, offer);
+      }, article);
 
-    this._offers.push(newOffer);
-    return newOffer;
+    this._items.push(newItem);
+    return newItem;
   }
 
   drop(id) {
-    const offer = this._offers.find((item) => item.id === id);
+    const article = this._items.find((item) => item.id === id);
 
-    if (!offer) {
+    if (!article) {
       return null;
     }
 
-    this._offers = this._offers.filter((item) => item.id !== id);
-    return offer;
+    this._items = this._items.filter((item) => item.id !== id);
+    return article;
   }
 
   findAll() {
-    return this._offers;
+    return this._items;
   }
 
   findOne(id) {
-    return this._offers.find((item) => item.id === id);
+    return this._items.find((item) => item.id === id);
   }
 
-  update(id, offer) {
-    const oldOffer = this._offers
+  update(id, article) {
+    const oldItem = this._items
       .find((item) => item.id === id);
 
-    return Object.assign(oldOffer, offer);
+    return Object.assign(oldItem, article);
   }
 
 }

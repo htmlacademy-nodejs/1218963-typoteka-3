@@ -22,11 +22,16 @@ const {
 const app = new Router();
 
 (async () => {
-  const mockData = await getMockData();
-  category(app, new CategoryService(mockData));
-  article(app, new ArticleService(mockData));
-  comment(app, new ArticleService(mockData), new CommentService(mockData));
-  search(app, new SearchService(mockData));
+  try {
+    const mockData = await getMockData();
+    category(app, new CategoryService(mockData));
+    article(app, new ArticleService(mockData));
+    comment(app, new ArticleService(mockData), new CommentService(mockData));
+    search(app, new SearchService(mockData));
+  } catch (error) {
+    console.log(error);
+    return;
+  }
 })();
 
 module.exports = app;

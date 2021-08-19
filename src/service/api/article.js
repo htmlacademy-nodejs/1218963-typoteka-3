@@ -27,26 +27,26 @@ module.exports = (app, articleService) => {
     const {
       articleId
     } = req.params;
-    const offer = articleService.findOne(articleId);
+    const article = articleService.findOne(articleId);
 
-    if (!offer) {
+    if (!article) {
       return res.status(HttpCode.NOT_FOUND)
         .send(`Not found with ${articleId}`);
     }
 
     return res.status(HttpCode.OK)
-      .json(offer);
+      .json(article);
   });
 
   route.post(`/`, articleValidator, (req, res) => {
-    const offer = articleService.create(req.body);
-    if (!offer) {
+    const article = articleService.create(req.body);
+    if (!article) {
       return res.status(HttpCode.BAD_REQUEST)
         .send(`Not created`);
     }
 
     return res.status(HttpCode.CREATED)
-      .json(offer);
+      .json(article);
   });
 
   route.put(`/:articleId`, [articleValidator], (req, res) => {
