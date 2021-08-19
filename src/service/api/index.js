@@ -8,6 +8,8 @@ const article = require(`../api/article.js`);
 const search = require(`../api/search.js`);
 const comment = require(`../api/comment.js`);
 
+const ExitCode = require(`../constants`);
+
 const {
   CategoryService,
   ArticleService,
@@ -30,7 +32,7 @@ const app = new Router();
     search(app, new SearchService(mockData));
   } catch (error) {
     console.log(error);
-    return;
+    process.exit(ExitCode.error);
   }
 })();
 
