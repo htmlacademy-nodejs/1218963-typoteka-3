@@ -15,14 +15,14 @@ module.exports = (app, searchService) => {
   route.get(`/`, (req, res) => {
     const query = req.query;
 
-    if (!query) {
-      res.status(HttpCode.BAD_REQUEST).json([]);
-      return;
+    if (Object.keys(query).length === 0) {
+      res.status(HttpCode.BAD_REQUEST)
+      .send(`Bad Request`);
     }
 
     const searchResults = searchService.findAll(query);
 
-    if (!searchResults) {
+    if (searchResults.includes(undefined)) {
       res.status(HttpCode.NOT_FOUND)
         .send(`Not found`);
     }
