@@ -2,8 +2,14 @@
 /* eslint-disable no-unused-vars */
 'use strict';
 
+const express = require(`express`);
+const request = require(`supertest`);
+
+const article = require(`./article`);
+const ArticleService = require(`../data-service/article`);
+
 const comment = require(`./comment`);
-const DataService = require(`../data-service/comment`);
+const CommentService = require(`../data-service/comment`);
 
 const {HttpCode} = require(`../constants`);
 
@@ -123,26 +129,27 @@ const createAPI = () => {
   const app = express();
   const cloneData = JSON.parse(JSON.stringify(mockData));
   app.use(express.json());
-  comment(app, new DataService(cloneData), new DataService());
+  comment(app, new ArticleService(cloneData), new CommentService(cloneData));
   return app;
 };
 
-describe(`API returns a list of comments to given offer`, () => {
+describe(`API returns a list of comments to given article`, () => {
 
   let response;
 
   beforeAll(async () => {
-    const app = await createAPI();
+    const app = createAPI();
+
     response = await request(app)
-        .get(`/articles/2/comments`);
+        .get(`/articles/w8jTa9/comments`);
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
 
   test(`Returns list of 3 comments`, () => expect(response.body.length).toBe(3));
 
-  test(`First comment's text is "Почему в таком ужасном состоянии?"`,
-      () => expect(response.body[0].text).toBe(`Почему в таком ужасном состоянии?`));
+  test(`First comment's text is "Хочу такую же футболку :-), Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.,"`,
+      () => expect(response.body[0].text).toBe(`Хочу такую же футболку :-), Мне не нравится ваш стиль. Ощущение, что вы меня поучаете.,`));
 
 });
 
@@ -157,9 +164,9 @@ describe(`API creates a comment if data is valid`, () => {
   let app; let response;
 
   beforeAll(async () => {
-    app = await createAPI();
+    app = createAPI();
     response = await request(app)
-        .post(`/articles/3/comments`)
+        .post(`/articles/w8jTa9/comments`)
         .send(newComment);
   });
 
@@ -167,15 +174,15 @@ describe(`API creates a comment if data is valid`, () => {
   test(`Status code 201`, () => expect(response.statusCode).toBe(HttpCode.CREATED));
 
   test(`Comments count is changed`, () => request(app)
-      .get(`/articles/3/comments`)
-      .expect((res) => expect(res.body.length).toBe(5))
+      .get(`/articles/w8jTa9/comments`)
+      .expect((res) => expect(res.body.length).toBe(4))
   );
 
 });
 
-test(`API refuses to create a comment to non-existent offer and returns status code 404`, async () => {
+test(`API refuses to create a comment to non-existent article and returns status code 404`, async () => {
 
-  const app = await createAPI();
+  const app = createAPI();
 
   return request(app)
       .post(`/articles/20/comments`)
@@ -192,10 +199,10 @@ test(`API refuses to create a comment when data is invalid, and returns status c
     text: `Не указан userId`
   };
 
-  const app = await createAPI();
+  const app = createAPI();
 
   return request(app)
-      .post(`/articles/2/comments`)
+      .post(`/articles/w8jTa9/comments`)
       .send(invalidComment)
       .expect(HttpCode.BAD_REQUEST);
 
@@ -206,23 +213,23 @@ describe(`API correctly deletes a comment`, () => {
   let app; let response;
 
   beforeAll(async () => {
-    app = await createAPI();
+    app = createAPI();
     response = await request(app)
-        .delete(`/articles/1/comments/1`);
+        .delete(`/articles/w8jTa9/comments/QABhgp`);
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
 
-  test(`Comments count is 3 now`, () => request(app)
-      .get(`/articles/1/comments`)
-      .expect((res) => expect(res.body.length).toBe(3))
+  test(`Comments count is 2 now`, () => request(app)
+      .get(`/articles/w8jTa9/comments`)
+      .expect((res) => expect(res.body.length).toBe(4))
   );
 
 });
 
 test(`API refuses to delete non-existent comment`, async () => {
 
-  const app = await createAPI();
+  const app = createAPI();
 
   return request(app)
       .delete(`/articles/4/comments/100`)
@@ -232,7 +239,7 @@ test(`API refuses to delete non-existent comment`, async () => {
 
 test(`API refuses to delete a comment to non-existent offer`, async () => {
 
-  const app = await createAPI();
+  const app = createAPI();
 
   return request(app)
       .delete(`/articles/20/comments/1`)

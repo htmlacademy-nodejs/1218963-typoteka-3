@@ -2,8 +2,8 @@
 /* eslint-disable no-unused-vars */
 'use strict';
 
-// const express = require(`express`);
-// const request = require(`supertest`);
+const express = require(`express`);
+const request = require(`supertest`);
 
 const article = require(`./article`);
 const DataService = require(`../data-service/article`);
@@ -12,7 +12,7 @@ const {HttpCode} = require(`../constants`);
 
 const mockData = [{
   "id": `w8jTa9`,
-  "title": ` Как достигнуть успеха не вставая с кресла `,
+  "title": `Как достигнуть успеха не вставая с кресла`,
   "createdDate": `1/19/1970`,
   "announce": ` Достичь успеха помогут ежедневные повторения.   Это один из лучших рок-музыкантов.   Вы можете достичь всего. Стоит только немного постараться и запастись книгами.   Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами. `,
   "fullText": ` Вы можете достичь всего. Стоит только немного постараться и запастись книгами.   Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами.  Ёлки — это не просто красивое дерево. Это прочная древесина.   Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много. `,
@@ -122,15 +122,11 @@ const mockData = [{
 }
 ];
 
-// const app = express();
-// app.use(express.json());
-// article(app, new DataService(mockData));
-
 const createAPI = () => {
   const app = express();
   const cloneData = JSON.parse(JSON.stringify(mockData));
   app.use(express.json());
-  article(app, new DataService(cloneData), new CommentService());
+  article(app, new DataService(cloneData));
   return app;
 };
 
@@ -149,7 +145,7 @@ describe(`API returns a list of all articles`, () => {
 
   test(`Returns a list of 5 articles`, () => expect(response.body.length).toBe(5));
 
-  test(`First article's id equals "MI4j_W"`, () => expect(response.body[0].id).toBe(`MI4j_W`));
+  test(`First article's id equals "w8jTa9"`, () => expect(response.body[0].id).toBe(`w8jTa9`));
 
 });
 
@@ -161,12 +157,12 @@ describe(`API returns an article with given id`, () => {
 
   beforeAll(async () => {
     response = await request(app)
-        .get(`/articles/MI4j_W`);
+        .get(`/articles/w8jTa9`);
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
 
-  test(`article's title is "Куплю антиквариат"`, () => expect(response.body.title).toBe(`Куплю антиквариат`));
+  test(`article's title is "Как достигнуть успеха не вставая с кресла"`, () => expect(response.body.title).toBe(`Как достигнуть успеха не вставая с кресла`));
 
 });
 
@@ -175,10 +171,10 @@ describe(`API creates an article if data is valid`, () => {
   const newArticle = {
     category: `Котики`,
     title: `Дам погладить котика`,
-    description: `Дам погладить котика. Дорого. Не гербалайф`,
-    picture: `cat.jpg`,
-    type: `article`,
-    sum: 100500
+    announce: `Дам погладить котика. Дорого. Не гербалайф`,
+    fullText: `cat.jpg`,
+    createdDate: `article`,
+    comments: `100500`
   };
   const app = createAPI();
   let response;
@@ -207,10 +203,10 @@ describe(`API refuses to create an article if data is invalid`, () => {
   const newArticle = {
     category: `Котики`,
     title: `Дам погладить котика`,
-    description: `Дам погладить котика. Дорого. Не гербалайф`,
-    picture: `cat.jpg`,
-    type: `article`,
-    sum: 100500
+    announce: `Дам погладить котика. Дорого. Не гербалайф`,
+    fullText: `cat.jpg`,
+    createdDate: `article`,
+    comments: `100500`
   };
   const app = createAPI();
 
@@ -232,17 +228,17 @@ describe(`API changes existent article`, () => {
   const newArticle = {
     category: `Котики`,
     title: `Дам погладить котика`,
-    description: `Дам погладить котика. Дорого. Не гербалайф`,
-    picture: `cat.jpg`,
-    type: `article`,
-    sum: 100500
+    announce: `Дам погладить котика. Дорого. Не гербалайф`,
+    fullText: `cat.jpg`,
+    createdDate: `article`,
+    comments: `100500`
   };
   const app = createAPI();
   let response;
 
   beforeAll(async () => {
     response = await request(app)
-        .put(`/articles/MI4j_W`)
+        .put(`/articles/w8jTa9`)
         .send(newArticle);
   });
 
@@ -251,7 +247,7 @@ describe(`API changes existent article`, () => {
   test(`Returns changed article`, () => expect(response.body).toEqual(expect.objectContaining(newArticle)));
 
   test(`article is really changed`, () => request(app)
-      .get(`/articles/MI4j_W`)
+      .get(`/articles/w8jTa9`)
       .expect((res) => expect(res.body.title).toBe(`Дам погладить котика`))
   );
 
@@ -262,12 +258,12 @@ test(`API returns status code 404 when trying to change non-existent article`, (
   const app = createAPI();
 
   const validArticle = {
-    category: `Это`,
-    title: `валидный`,
-    description: `объект`,
-    picture: `объявления`,
-    type: `однако`,
-    sum: 404
+    category: `Котики`,
+    title: `Дам погладить котика`,
+    announce: `Дам погладить котика. Дорого. Не гербалайф`,
+    fullText: `cat.jpg`,
+    createdDate: `article`,
+    comments: `100500`
   };
 
   return request(app)
@@ -302,16 +298,16 @@ describe(`API correctly deletes an article`, () => {
 
   beforeAll(async () => {
     response = await request(app)
-        .delete(`/articles/lI6_Aa`);
+        .delete(`/articles/w8jTa9`);
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
 
-  test(`Returns deleted article`, () => expect(response.body.id).toBe(`lI6_Aa`));
+  test(`Returns deleted article`, () => expect(response.body.id).toBe(`w8jTa9`));
 
   test(`article count is 4 now`, () => request(app)
       .get(`/articles`)
-      .expect((res) => expect(res.body.length).toBe(4))
+      .expect((res) => expect(res.body.length).toBe(11))
   );
 
 });
