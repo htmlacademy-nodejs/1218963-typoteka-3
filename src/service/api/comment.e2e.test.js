@@ -2,9 +2,6 @@
 /* eslint-disable no-unused-vars */
 'use strict';
 
-// const express = require(`express`);
-// const request = require(`supertest`);
-
 const comment = require(`./comment`);
 const DataService = require(`../data-service/comment`);
 
@@ -121,10 +118,6 @@ const mockData = [{
   }]
 }
 ];
-
-// const app = express();
-// app.use(express.json());
-comment(app, new DataService(mockData));
 
 const createAPI = () => {
   const app = express();
