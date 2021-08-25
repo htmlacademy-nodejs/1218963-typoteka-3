@@ -9,6 +9,8 @@ const search = require(`../api/search.js`);
 const comment = require(`../api/comment.js`);
 
 const ExitCode = require(`../constants`);
+const {getLogger} = require(`../lib/logger`);
+const logger = getLogger({name: `api`});
 
 const {
   CategoryService,
@@ -31,7 +33,7 @@ const app = new Router();
     comment(app, new ArticleService(mockData), new CommentService(mockData));
     search(app, new SearchService(mockData));
   } catch (error) {
-    console.log(error);
+    logger.error(error);
     process.exit(ExitCode.error);
   }
 })();

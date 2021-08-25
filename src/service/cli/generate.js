@@ -4,6 +4,9 @@ const chalk = require(`chalk`);
 const fs = require(`fs`).promises;
 
 const {nanoid} = require(`nanoid`);
+const {getLogger} = require(`../lib/logger`);
+const logger = getLogger({name: `api`});
+
 
 const {
   getRandomInt,
@@ -68,10 +71,10 @@ module.exports = {
 
     try {
       await fs.writeFile(FILE_NAME, content);
-      console.log(chalk.green(`Operation success. File created.`));
+      logger.info(chalk.green(`Operation success. File created.`));
       process.exit(ExitCode.success);
     } catch (err) {
-      console.error(chalk.red(`Can't write data to file...`));
+      logger.error(chalk.red(`Can't write data to file...`));
       process.exit(ExitCode.error);
 
     }
