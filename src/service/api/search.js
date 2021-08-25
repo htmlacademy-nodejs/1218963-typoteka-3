@@ -18,6 +18,7 @@ module.exports = (app, searchService) => {
     if (Object.keys(query).length === 0) {
       res.status(HttpCode.BAD_REQUEST)
       .send(`Bad Request`);
+      return;
     }
 
     const searchResults = searchService.findAll(query);

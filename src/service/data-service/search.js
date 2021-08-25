@@ -7,9 +7,6 @@ class SearchService {
 
   findAll(searchText) {
     let result = [];
-    // if (!searchText) {
-    //   result = ``;
-    // }
     result.push(this._articles.find((item) => item.title.includes(searchText.title)));
     return result;
   }
