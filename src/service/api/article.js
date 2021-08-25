@@ -61,7 +61,7 @@ module.exports = (app, articleService) => {
         .send(`Not found with ${articleId}`);
     }
     return res.status(HttpCode.OK)
-      .send(`Updated`);
+      .send(updated);
   });
 
   route.delete(`/:articleId`, (req, res) => {

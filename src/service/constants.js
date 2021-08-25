@@ -32,6 +32,8 @@ const HttpCode = {
   BAD_REQUEST: 400
 };
 
+const API_PREFIX = `/api`;
+
 module.exports = {
   DEFAULT_COUNT,
   DEFAULT_COMMAND,
@@ -47,5 +49,11 @@ module.exports = {
   FILENAME,
   MAX_ID_LENGTH,
   MAX_COMMENTS,
-  HttpCode
+  HttpCode,
+  API_PREFIX
+};
+
+module.exports.Env = {
+  DEVELOPMENT: `development`,
+  PRODUCTION: `production`
 };
