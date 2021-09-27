@@ -10,7 +10,7 @@
     "start": "cross-env NODE_ENV=production node ./src/service/service.js",
     "start::debug": "cross-env NODE_ENV=development node ./src/service/service.js",
     "server": "nodemon /src/service/service.js --server 3000",
-    "start-front-server": "node ./src/express/index.js"
+    "start-frontend-server": "node ./src/express/index.js"
   },
   "repository": {
     "type": "git",
@@ -39,6 +39,6 @@
     "express": "4.17.1",
     "nanoid": "3.1.23",
     "pino": "6.13.1",
-    "pug": "2.0.4"
+    "pug": "3.0.2"
   }
 }
