@@ -38,7 +38,7 @@ module.exports = (app, articleService) => {
       .json(article);
   });
 
-  route.post(`/`, articleValidator, (req, res) => {
+  route.post(`/`, (req, res) => {
     const article = articleService.create(req.body);
     if (!article) {
       return res.status(HttpCode.BAD_REQUEST)

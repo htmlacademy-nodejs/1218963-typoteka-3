@@ -5,7 +5,7 @@ block content
     section
       .popup.popup--new-publication.popup--anti
         .new-publication
-          form(action='/api/arcticles' method='POST')
+          form(action='/articles/add' method='POST' enctype="multipart/form-data")
             .new-publication__header
               h1 Новая публикация
               .new-publication__date-form
@@ -22,7 +22,7 @@ block content
               .form__wrapper.form__wrapper--intro
                 .form__field
                   label
-                    input#ticket-name(type='text' name='title' placeholder='Заголовок' required='')
+                    input#article-name(type='text' name='title' placeholder='Заголовок' required='')
                 .form__field.form__field--post-image
                   label
                     input#image-name-field(type='text' name='photo' placeholder='Фотография' readonly='')

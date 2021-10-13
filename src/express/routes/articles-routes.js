@@ -2,7 +2,6 @@
 
 const {Router} = require(`express`);
 const upload = require(`../middlewares/upload`);
-// const {ensureArray} = require(`../../utils`);
 
 const articlesRoutes = new Router();
 const api = require(`../api`).getAPI();
@@ -19,17 +18,20 @@ articlesRoutes.get(`/edit/:id`, async (req, res) => {
 articlesRoutes.get(`/:id`, (req, res) => res.render(`post`));
 
 articlesRoutes.post(`/add`,
-    upload.single(`avatar`),
+    upload.single(`upload`),
     async (req, res) => {
       const {body, file} = req;
+      console.log(body);
       const articleData = {
         picture: file ? file.filename : ``,
-        title: body[`ticket-name`],
-        // category: ensureArray(body.category),
+        createdDate: body.date,
+        title: body.title,
+        announce: body.announcement,
+        fullText: body[`full-text`]
       };
 
       try {
-        await api.createArticle(`/articles`, articleData);
+        await api.createArticle(articleData);
         res.redirect(`/my`);
       } catch (error) {
         res.redirect(`back`);
