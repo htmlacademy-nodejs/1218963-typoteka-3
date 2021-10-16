@@ -15,7 +15,13 @@ myRoutes.get(`/`, async (req, res) => {
 
 myRoutes.get(`/comments`, async (req, res) => {
   const articles = await api.getArticles();
-  res.render(`comments`, {articles: articles.slice(0, 5)});
+  const comments = [];
+  articles.map((article) => {
+    article.comments.map((comment) => {
+      comments.push(comment);
+    });
+  });
+  res.render(`comments`, {comments});
 });
 
 module.exports = myRoutes;

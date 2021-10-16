@@ -19,11 +19,11 @@ mainRoutes.get(`/search`, async (req, res) => {
     const {query} = req.query;
     const results = await api.search(query);
 
-    res.render(`search-2`, {
+    res.render(`search`, {
       results
     });
   } catch (error) {
-    res.render(`search-1`, {
+    res.render(`search-empty`, {
       results: []
     });
   }

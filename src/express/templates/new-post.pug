@@ -30,8 +30,10 @@ block content
                     label
                       input.visually-hidden(type='file' name='upload')
                       | Обзор
-                .new-publication__category-wrapper
-                  a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
+                .new-publication__category-wrapper 
+                  select.new-publication__form-link.button.button--transparent(name="category" data-label="Выбрать категорию публикации") Добавить категорию   
+                   each category in categories
+                     option(value=category) #{category}
               .form__wrapper.form__wrapper--text
                 .form__field.form__field--publication-text
                   label
