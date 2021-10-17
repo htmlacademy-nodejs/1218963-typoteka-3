@@ -33,6 +33,16 @@ class CommentService {
     return this._articles.find((item) => item.id === articleId).comments;
   }
 
+  findAll() {
+    const comments = [];
+    this._articles.map((article) => {
+      article.comments.map((comment) => {
+        comments.push(comment);
+      });
+    });
+    return comments;
+  }
+
 }
 
 module.exports = CommentService;

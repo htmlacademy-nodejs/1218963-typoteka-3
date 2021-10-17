@@ -17,6 +17,13 @@ module.exports = (app, articleService, commentService) => {
 
   app.use(`/articles`, route);
 
+  route.get(`/comments`, (req, res) => {
+    const comments = commentService.findAll();
+
+    res.status(HttpCode.OK)
+      .json(comments);
+  });
+
   route.get(`/:articleId/comments`, [articleExist(articleService)], (req, res) => {
     const {
       articleId

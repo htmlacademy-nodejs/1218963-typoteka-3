@@ -5,7 +5,7 @@ block content
     section
       .popup.popup--new-publication.popup--anti
         .new-publication
-          form(action='#' method='POST')
+          form(action='/articles/add' method='POST' enctype="multipart/form-data")
             .new-publication__header
               h1 Новая публикация
               .new-publication__date-form
@@ -22,7 +22,7 @@ block content
               .form__wrapper.form__wrapper--intro
                 .form__field
                   label
-                    input(type='text' name='title' placeholder='Заголовок' required='')
+                    input#article-name(type='text' name='title' placeholder='Заголовок' required='')
                 .form__field.form__field--post-image
                   label
                     input#image-name-field(type='text' name='photo' placeholder='Фотография' readonly='')
@@ -30,8 +30,10 @@ block content
                     label
                       input.visually-hidden(type='file' name='upload')
                       | Обзор
-                .new-publication__category-wrapper
-                  a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
+                .new-publication__category-wrapper 
+                  select.new-publication__form-link.button.button--transparent(name="category" data-label="Выбрать категорию публикации") Добавить категорию   
+                   each category in categories
+                     option(value=category) #{category}
               .form__wrapper.form__wrapper--text
                 .form__field.form__field--publication-text
                   label
