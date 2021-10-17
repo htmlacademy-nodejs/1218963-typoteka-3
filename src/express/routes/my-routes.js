@@ -14,13 +14,7 @@ myRoutes.get(`/`, async (req, res) => {
 });
 
 myRoutes.get(`/comments`, async (req, res) => {
-  const articles = await api.getArticles();
-  const comments = [];
-  articles.map((article) => {
-    article.comments.map((comment) => {
-      comments.push(comment);
-    });
-  });
+  const comments = await api.getComments();
   res.render(`comments`, {comments});
 });
 

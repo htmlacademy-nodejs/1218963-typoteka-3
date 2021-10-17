@@ -16,6 +16,10 @@ class API {
     return this._load(`/articles`);
   }
 
+  getComments() {
+    return this._load(`/comments`);
+  }
+
   getArticle(id) {
     return this._load(`/articles/${id}`);
   }
