@@ -14,8 +14,8 @@ module.exports = (app, commentService) => {
 
   app.use(`/comments`, route);
 
-  route.get(`/`, (req, res) => {
-    const comments = commentService.findAll();
+  route.get(`/`, async (req, res) => {
+    const comments = await commentService.findAll();
 
     res.status(HttpCode.OK)
       .json(comments);

@@ -16,10 +16,9 @@ module.exports = (app, articleService) => {
 
   app.use(`/articles`, route);
 
-  route.get(`/`, (req, res) => {
-    const articles = articleService.findAll();
-    res.status(HttpCode.OK)
-      .json(articles);
+  route.get(`/`, async (req, res) => {
+    let articles = await articleService.findAll();
+    res.status(HttpCode.OK).json(articles);
   });
 
 

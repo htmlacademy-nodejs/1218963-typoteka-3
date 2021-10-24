@@ -22,7 +22,7 @@ CREATE TABLE users(
 CREATE TABLE articles(
   id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   title varchar(255) NOT NULL,
-  createdDate timestamp DEFAULT current_timestamp,
+  created_at timestamp DEFAULT current_timestamp,
   announce text NOT NULL,
   fullText text NOT NULL,
   picture varchar(50),
@@ -36,7 +36,7 @@ CREATE TABLE comments(
   article_id integer NOT NULL,
   user_id integer NOT NULL,
   text text NOT NULL,
-  created_at timestamp DEFAULT current_timestamp,
+  createdAt timestamp DEFAULT current_timestamp,
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (article_id) REFERENCES articles(id)
 );

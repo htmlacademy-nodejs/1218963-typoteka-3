@@ -17,31 +17,31 @@ module.exports = (app, articleService, commentService) => {
 
   app.use(`/articles`, route);
 
-  route.get(`/comments`, (req, res) => {
-    const comments = commentService.findAll();
+  route.get(`/comments`, async (req, res) => {
+    const comments = await commentService.findAll();
 
     res.status(HttpCode.OK)
       .json(comments);
   });
 
-  route.get(`/:articleId/comments`, [articleExist(articleService)], (req, res) => {
+  route.get(`/:articleId/comments`, [articleExist(articleService)], async (req, res) => {
     const {
       articleId
     } = req.params;
 
-    const comments = commentService.findOne(articleId);
+    const comments = await commentService.findOne(articleId);
 
     res.status(HttpCode.OK)
       .json(comments);
 
   });
 
-  route.delete(`/:articleId/comments/:commentId`, [articleExist(articleService)], (req, res) => {
+  route.delete(`/:articleId/comments/:commentId`, [articleExist(articleService)], async (req, res) => {
     const {
       articleId,
       commentId
     } = req.params;
-    const deleted = commentService.drop(articleId, commentId);
+    const deleted = await commentService.drop(articleId, commentId);
 
     if (!deleted) {
       return res.status(HttpCode.NOT_FOUND)
@@ -52,12 +52,12 @@ module.exports = (app, articleService, commentService) => {
       .json(deleted);
   });
 
-  route.post(`/:articleId/comments`, [articleExist(articleService), commentValidator], (req, res) => {
+  route.post(`/:articleId/comments`, [articleExist(articleService), commentValidator], async (req, res) => {
     const {
       articleId
     } = req.params;
 
-    const comment = commentService.create(articleId, req.body);
+    const comment = await commentService.create(articleId, req.body);
 
     if (!comment) {
       return res.status(HttpCode.BAD_REQUEST)
