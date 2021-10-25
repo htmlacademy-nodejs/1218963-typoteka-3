@@ -12,6 +12,8 @@ const define = (sequelize) => Comment.init({
     allowNull: false
   }
 }, {
+  createdAt: false,
+  updatedAt: false,
   sequelize,
   modelName: `Comment`,
   tableName: `comments`

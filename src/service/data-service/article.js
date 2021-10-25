@@ -29,8 +29,11 @@ class ArticleService {
   }
 
   async findAll() {
-    let articles = await this._Article.findAll();
-    return articles;
+    const include = [];
+    include.push(Aliase.COMMENTS);
+    const articles = await this._Article.findAll({include});
+
+    return articles.map((item) => item.get());
   }
 
   async findOne({articleId, userId, withComments}) {

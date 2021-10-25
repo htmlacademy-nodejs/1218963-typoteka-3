@@ -1,7 +1,7 @@
 'use strict';
 
 const {Op} = require(`sequelize`);
-const Aliase = require(`..//models/aliase`);
+const Aliase = require(`../models/aliase`);
 
 class SearchService {
   constructor(sequelize) {
@@ -17,7 +17,7 @@ class SearchService {
       },
       include: [Aliase.CATEGORIES],
       order: [
-        [`createdDate`, `DESC`]
+        [`created_at`, `DESC`]
       ]
     });
     return articles.map((article) => article.get());
