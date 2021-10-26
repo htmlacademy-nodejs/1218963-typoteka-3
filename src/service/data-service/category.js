@@ -8,6 +8,9 @@ class CategoryService {
   async findAll() {
     return this._Category.findAll({raw: true});
   }
+  async findOne(categoryId) {
+    return this._Category.findByPk(categoryId);
+  }
 }
 
 module.exports = CategoryService;

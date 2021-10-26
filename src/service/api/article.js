@@ -22,11 +22,11 @@ module.exports = (app, articleService) => {
   });
 
 
-  route.get(`/:articleId`, (req, res) => {
+  route.get(`/:articleId`, async (req, res) => {
     const {
       articleId
     } = req.params;
-    const article = articleService.findOne(articleId);
+    let article = await articleService.findOne(articleId);
 
     if (!article) {
       return res.status(HttpCode.NOT_FOUND)

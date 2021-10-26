@@ -17,12 +17,9 @@ class ArticleService {
     return article.get();
   }
 
-  async drop({userId, articleId}) {
+  async drop(id) {
     const deletedRow = await this._Article.destroy({
-      where: {
-        id: articleId,
-        userId
-      }
+      where: {id}
     });
 
     return !!deletedRow;
@@ -36,125 +33,8 @@ class ArticleService {
     return articles.map((item) => item.get());
   }
 
-  async findOne({articleId, userId, withComments}) {
-    const options = {
-      include: [
-        Aliase.CATEGORIES,
-        {
-          model: this._User,
-          as: Aliase.USERS,
-          attributes: {
-            exclude: [`passwordHash`]
-          }
-        }
-      ],
-      where: [{
-        id: articleId
-      }]
-    };
-
-    if (userId) {
-      options.where.push({userId});
-    }
-
-    if (withComments) {
-      options.include.push({
-        model: this._Comment,
-        as: Aliase.COMMENTS,
-        include: [
-          {
-            model: this._User,
-            as: Aliase.USERS,
-            attributes: {
-              exclude: [`passwordHash`]
-            }
-          }
-        ]
-      });
-
-      options.order = [
-        [{model: this._Comment, as: Aliase.COMMENTS}, `created_at`, `DESC`]
-      ];
-    }
-
-    return await this._Article.findOne(options);
-  }
-
-  async findPage({limit, offset}) {
-    const {count, rows} = await this._Article.findAndCountAll({
-      limit,
-      offset,
-      include: [
-        Aliase.CATEGORIES,
-        {
-          model: this._User,
-          as: Aliase.USERS,
-          attributes: {
-            exclude: [`passwordHash`]
-          }
-        }
-      ],
-      order: [
-        [`createdDate`, `DESC`]
-      ],
-      distinct: true
-    });
-
-    return {count, rows};
-  }
-
-  async findLimit({limit, withComments}) {
-    if (!withComments) {
-      const options = {
-        limit,
-        include: [
-          Aliase.CATEGORIES
-        ],
-        order: [
-          [`createdDate`, `DESC`]
-        ]
-      };
-
-      return await this._Article.findAll(options);
-    }
-
-    const options = {
-      subQuery: false,
-      attributes: {
-        include: [
-          [this._sequelize.fn(`COUNT`, this._sequelize.col(`comments.id`)), `commentsCount`]
-        ]
-      },
-      include: [
-        {
-          model: this._Comment,
-          as: Aliase.COMMENTS,
-          attributes: [],
-        },
-        {
-          model: this._Category,
-          as: Aliase.CATEGORIES,
-          attributes: [`id`, `name`]
-        }
-      ],
-      group: [
-        `Article.id`,
-        `categories.id`,
-        `categories->ArticleCategory.ArticleId`,
-        `categories->ArticleCategory.CategoryId`
-      ],
-      order: [
-        [this._sequelize.fn(`COUNT`, this._sequelize.col(`comments.id`)), `DESC`]
-      ]
-    };
-
-    let articles = await this._Article.findAll(options);
-
-    articles = articles
-      .map((article) => article.get())
-      .filter((article) => article.commentsCount > 0);
-
-    return articles.slice(0, limit);
+  async findOne(articleId) {
+    return await this._Article.findByPk(articleId, {include: [Aliase.CATEGORIES]});
   }
 
   async update({id, article}) {

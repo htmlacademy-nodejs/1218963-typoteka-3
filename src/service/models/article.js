@@ -26,7 +26,7 @@ const define = (sequelize) => Article.init({
   picture: DataTypes.STRING(1000)
 },
 {
-  createdAt: `created_at`,
+  createdAt: false,
   updatedAt: false,
   sequelize,
   modelName: `Article`,

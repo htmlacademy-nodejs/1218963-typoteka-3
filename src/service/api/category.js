@@ -17,4 +17,15 @@ module.exports = (app, service) => {
     res.status(HttpCode.OK)
       .json(categories);
   });
+
+  route.get(`/:categoryId`, async (req, res) => {
+    const {categoryId} = req.params;
+
+    const category = await service.findOne(categoryId);
+
+    res.status(HttpCode.OK)
+      .json({
+        category
+      });
+  });
 };
