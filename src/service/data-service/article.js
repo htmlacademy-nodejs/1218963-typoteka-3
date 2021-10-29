@@ -13,7 +13,6 @@ class ArticleService {
 
   async create(articleData) {
     const article = await this._Article.create(articleData);
-    await article.addCategories(articleData.categories);
     return article.get();
   }
 
@@ -27,14 +26,16 @@ class ArticleService {
 
   async findAll() {
     const include = [];
-    include.push(Aliase.COMMENTS);
+    include.push(Aliase.CATEGORIES, Aliase.COMMENTS);
     const articles = await this._Article.findAll({include});
 
     return articles.map((item) => item.get());
   }
 
   async findOne(articleId) {
-    return await this._Article.findByPk(articleId, {include: [Aliase.CATEGORIES]});
+    const include = [];
+    include.push(Aliase.CATEGORIES, Aliase.COMMENTS);
+    return await this._Article.findByPk(articleId, {include});
   }
 
   async update({id, article}) {
