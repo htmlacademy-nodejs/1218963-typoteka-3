@@ -1,11 +1,11 @@
+/* eslint-disable new-cap */
 /* eslint-disable camelcase */
 "use strict";
 
 const {DataTypes, Model} = require(`sequelize`);
+const Aliase = require(`./aliase`);
 
-class Article extends Model {
-
-}
+class Article extends Model {}
 
 const define = (sequelize) => Article.init({
   title: {
@@ -13,16 +13,13 @@ const define = (sequelize) => Article.init({
     allowNull: false
   },
   announce: {
-    // eslint-disable-next-line new-cap
     type: DataTypes.STRING(1000),
     allowNull: false
   },
   fulltext: {
-    // eslint-disable-next-line new-cap
     type: DataTypes.STRING(1000),
     allowNull: false
   },
-  // eslint-disable-next-line new-cap
   picture: DataTypes.STRING(1000)
 },
 {
@@ -33,4 +30,10 @@ const define = (sequelize) => Article.init({
   tableName: `articles`
 });
 
-module.exports = define;
+const defineRelations = ({Comment, Category, User}) => {
+  Article.hasMany(Comment, {as: Aliase.COMMENTS, foreignKey: `article_id`, onDelete: `cascade`});
+  Article.belongsToMany(Category, {through: Aliase.ARTICLE_CATEGORIES, as: Aliase.CATEGORIES, foreignKey: `article_id`});
+  Article.belongsTo(User, {as: Aliase.USERS, foreignKey: `user_id`});
+};
+
+module.exports = {define, defineRelations};

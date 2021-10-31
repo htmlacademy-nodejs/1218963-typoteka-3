@@ -1,10 +1,9 @@
 "use strict";
 
 const {DataTypes, Model} = require(`sequelize`);
+const Aliase = require(`./aliase`);
 
-class User extends Model {
-
-}
+class User extends Model {}
 
 const define = (sequelize) => User.init({
   email: {
@@ -34,4 +33,9 @@ const define = (sequelize) => User.init({
   tableName: `users`
 });
 
-module.exports = define;
+const defineRelations = ({Comment, Article}) => {
+  User.hasMany(Article, {as: Aliase.ARTICLES, foreignKey: `user_id`});
+  User.hasMany(Comment, {as: Aliase.COMMENTS, foreignKey: `user_id`});
+};
+
+module.exports = {define, defineRelations};

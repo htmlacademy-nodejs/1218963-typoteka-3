@@ -17,7 +17,7 @@ module.exports = (app, articleService) => {
   app.use(`/articles`, route);
 
   route.get(`/`, async (req, res) => {
-    let articles = await articleService.findAll();
+    const articles = await articleService.findAll();
     res.status(HttpCode.OK).json(articles);
   });
 
@@ -26,7 +26,7 @@ module.exports = (app, articleService) => {
     const {
       articleId
     } = req.params;
-    let article = await articleService.findOne(articleId);
+    const article = await articleService.findOne(articleId);
 
     if (!article) {
       return res.status(HttpCode.NOT_FOUND)

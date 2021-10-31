@@ -4,10 +4,9 @@ const {
   DataTypes,
   Model
 } = require(`sequelize`);
+const Aliase = require(`./aliase`);
 
-class Category extends Model {
-
-}
+class Category extends Model {}
 
 const define = (sequelize) => Category.init({
   name: {
@@ -22,4 +21,8 @@ const define = (sequelize) => Category.init({
   tableName: `categories`
 });
 
-module.exports = define;
+const defineRelations = ({Article}) => {
+  Category.belongsToMany(Article, {through: Aliase.ARTICLE_CATEGORIES, as: Aliase.ARTICLES, foreignKey: `category_id`});
+};
+
+module.exports = {define, defineRelations};

@@ -8,11 +8,6 @@ const article = require(`../api/article.js`);
 const search = require(`../api/search.js`);
 const comment = require(`../api/comment.js`);
 const allComments = require(`../api/all-comments.js`);
-
-// const ExitCode = require(`../constants`);
-// const {getLogger} = require(`../lib/logger`);
-// const logger = getLogger({name: `api`});
-
 const sequelize = require(`../lib/sequelize`);
 const defineModels = require(`../models`);
 
