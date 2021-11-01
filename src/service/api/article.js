@@ -16,18 +16,17 @@ module.exports = (app, articleService) => {
 
   app.use(`/articles`, route);
 
-  route.get(`/`, (req, res) => {
-    const articles = articleService.findAll();
-    res.status(HttpCode.OK)
-      .json(articles);
+  route.get(`/`, async (req, res) => {
+    const articles = await articleService.findAll();
+    res.status(HttpCode.OK).json(articles);
   });
 
 
-  route.get(`/:articleId`, (req, res) => {
+  route.get(`/:articleId`, async (req, res) => {
     const {
       articleId
     } = req.params;
-    const article = articleService.findOne(articleId);
+    const article = await articleService.findOne(articleId);
 
     if (!article) {
       return res.status(HttpCode.NOT_FOUND)

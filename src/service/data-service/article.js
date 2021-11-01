@@ -1,59 +1,62 @@
 'use strict';
 
-const {
-  MAX_ID_LENGTH
-} = require(`../constants`);
-
-const {
-  nanoid
-} = require(`nanoid`);
-
+const Aliase = require(`../models/aliase`);
 
 class ArticleService {
-  constructor(items) {
-    this._items = items;
+  constructor(sequelize) {
+    this._sequelize = sequelize;
+    this._Article = sequelize.models.Article;
+    this._Comment = sequelize.models.Comment;
+    this._Category = sequelize.models.Category;
+    this._User = sequelize.models.User;
   }
 
-  create(article) {
-    const newItem = Object
-      .assign({
-        id: nanoid(MAX_ID_LENGTH),
-        comments: []
-      }, article);
-
-    this._items.push(newItem);
-    return newItem;
+  async create(articleData) {
+    const article = await this._Article.create(articleData);
+    return article.get();
   }
 
-  drop(id) {
-    const article = this._items.find((item) => item.id === id);
+  async drop(id) {
+    const deletedRow = await this._Article.destroy({
+      where: {id}
+    });
 
-    if (!article) {
-      return null;
-    }
-
-    this._items = this._items.filter((item) => item.id !== id);
-    return article;
+    return !!deletedRow;
   }
 
-  findAll() {
-    return this._items;
+  async findAll() {
+    const include = [];
+    include.push(Aliase.CATEGORIES, Aliase.COMMENTS);
+    const articles = await this._Article.findAll({include});
+
+    return articles.map((item) => item.get());
   }
 
-  findOne(id) {
-    return this._items.find((item) => item.id === id);
+  async findOne(articleId) {
+    const include = [];
+    include.push(Aliase.CATEGORIES, Aliase.COMMENTS);
+    return await this._Article.findByPk(articleId, {include});
   }
 
-  update(id, article) {
-    const oldItem = this._items
-      .find((item) => item.id === id);
-    if (!oldItem) {
-      return null;
-    }
+  async update({id, article}) {
+    const affectedRows = await this._Article.update(article, {
+      where: {
+        id,
+        userId: article.userId
+      }
+    });
 
-    return Object.assign(oldItem, article);
+    const updatedArticle = await this._Article.findOne({
+      where: {
+        id,
+        userId: article.userId
+      }
+    });
+
+    await updatedArticle.setCategories(article.categories);
+
+    return !!affectedRows;
   }
-
 }
 
 module.exports = ArticleService;

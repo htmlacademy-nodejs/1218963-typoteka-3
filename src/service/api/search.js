@@ -12,7 +12,7 @@ const route = new Router();
 module.exports = (app, searchService) => {
   app.use(`/search`, route);
 
-  route.get(`/`, (req, res) => {
+  route.get(`/`, async (req, res) => {
     const query = req.query;
 
     if (Object.keys(query).length === 0) {
@@ -21,7 +21,7 @@ module.exports = (app, searchService) => {
       return;
     }
 
-    const searchResults = searchService.findAll(query);
+    const searchResults = await searchService.findAll(query);
 
     if (searchResults.includes(undefined)) {
       res.status(HttpCode.NOT_FOUND)
