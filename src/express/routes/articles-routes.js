@@ -5,9 +5,62 @@ const upload = require(`../middlewares/upload`);
 
 const articlesRoutes = new Router();
 const api = require(`../api`).getAPI();
-const {ensureArray} = require(`../../utils`);
+const {ensureArray, prepareErrors} = require(`../../utils`);
+
+const getViewArticleData = ({id}) => {
+  return api.getArticle(id);
+};
+
+const getEditArticlesData = async (articleId) => {
+  const [article, categories] = await Promise.all([
+    api.getArticle(articleId),
+    api.getCategories()
+  ]);
+  return [article, categories];
+};
+
+articlesRoutes.get(`/edit/:id`, async (req, res) => {
+  const {id} = req.params;
+  const [article, categories] = await getEditArticlesData(id);
+  res.render(`articles/edit-post`, {id, article, categories});
+});
+
+articlesRoutes.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+  const {body, file} = req;
+  const {id} = req.params;
+  const articleData = {
+    picture: file ? file.filename : body[`old-image`],
+    sum: body.price,
+    type: body.action,
+    description: body.comment,
+    title: body[`post-name`],
+    categories: ensureArray(body.category)
+  };
+
+  try {
+    await api.editArticle(id, articleData);
+    res.redirect(`/my`);
+  } catch (errors) {
+    const validationMessages = prepareErrors(errors);
+    const [article, categories] = await getEditArticlesData(id);
+    res.render(`articles/edit-post`, {id, article, categories, validationMessages});
+  }
+});
 
 articlesRoutes.get(`/category/:id`, (req, res) => res.render(`articles-by-category`));
+
+articlesRoutes.post(`/:id/comments`, async (req, res) => {
+  const {id} = req.params;
+  const {comment} = req.body;
+  try {
+    await api.createComment(id, {text: comment});
+    res.redirect(`/articles/${id}`);
+  } catch (errors) {
+    const validationMessages = prepareErrors(errors);
+    const offer = await getViewArticleData(id, true);
+    res.render(`articles`, {offer, id, validationMessages});
+  }
+});
 
 articlesRoutes.get(`/add`, async (req, res) => {
   const categories = await api.getCategories();
@@ -20,7 +73,12 @@ articlesRoutes.get(`/edit/:id`, async (req, res) => {
   res.render(`edit-post`, {article});
 });
 
-articlesRoutes.get(`/:id`, (req, res) => res.render(`post`));
+articlesRoutes.get(`/:id`, async (req, res) => {
+  const {id} = req.params;
+  const article = await getViewArticleData(id);
+  res.render(`post`, {article, id});
+});
+
 
 articlesRoutes.post(`/add`,
     upload.single(`upload`),
@@ -40,7 +98,8 @@ articlesRoutes.post(`/add`,
         await api.createArticle(articleData);
         res.redirect(`/my`);
       } catch (error) {
-        res.redirect(`back`);
+        const validationMessages = prepareErrors(error);
+        res.render(`articles/new-post`, {validationMessages, csrfToken: req.csrfToken()});
       }
     }
 );
