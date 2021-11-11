@@ -8,7 +8,9 @@ const request = require(`supertest`);
 const article = require(`./article`);
 const DataService = require(`../data-service/article`);
 
-const {HttpCode} = require(`../constants`);
+const {
+  HttpCode
+} = require(`../constants`);
 
 const mockData = [{
   "id": `w8jTa9`,
@@ -138,7 +140,7 @@ describe(`API returns a list of all articles`, () => {
 
   beforeAll(async () => {
     response = await request(app)
-        .get(`/articles`);
+      .get(`/articles`);
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
@@ -157,7 +159,7 @@ describe(`API returns an article with given id`, () => {
 
   beforeAll(async () => {
     response = await request(app)
-        .get(`/articles/w8jTa9`);
+      .get(`/articles/w8jTa9`);
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
@@ -181,8 +183,8 @@ describe(`API creates an article if data is valid`, () => {
 
   beforeAll(async () => {
     response = await request(app)
-        .post(`/articles`)
-        .send(newArticle);
+      .post(`/articles`)
+      .send(newArticle);
   });
 
 
@@ -192,8 +194,8 @@ describe(`API creates an article if data is valid`, () => {
   test(`Returns article created`, () => expect(response.body).toEqual(expect.objectContaining(newArticle)));
 
   test(`articles count is changed`, () => request(app)
-      .get(`/articles`)
-      .expect((res) => expect(res.body.length).toBe(6))
+    .get(`/articles`)
+    .expect((res) => expect(res.body.length).toBe(6))
   );
 
 });
@@ -212,12 +214,57 @@ describe(`API refuses to create an article if data is invalid`, () => {
 
   test(`Without any required property response code is 400`, async () => {
     for (const key of Object.keys(newArticle)) {
-      const badArticle = {...newArticle};
+      const badArticle = {
+        ...newArticle
+      };
       delete badArticle[key];
       await request(app)
-          .post(`/articles`)
-          .send(badArticle)
-          .expect(HttpCode.BAD_REQUEST);
+        .post(`/articles`)
+        .send(badArticle)
+        .expect(HttpCode.BAD_REQUEST);
+    }
+  });
+  test(`When field type is wrong response code is 400`, async () => {
+    const badArticles = [{
+      ...newArticle,
+      sum: true
+    },
+    {
+      ...newArticle,
+      picture: 12345
+    },
+    {
+      ...newArticle,
+      categories: `Котики`
+    }
+    ];
+    for (const badArticle of badArticles) {
+      await request(app)
+        .post(`/articles`)
+        .send(badArticle)
+        .expect(HttpCode.BAD_REQUEST);
+    }
+  });
+
+  test(`When field value is wrong response code is 400`, async () => {
+    const badArticles = [{
+      ...newArticle,
+      sum: -1
+    },
+    {
+      ...newArticle,
+      title: `too short`
+    },
+    {
+      ...newArticle,
+      categories: []
+    }
+    ];
+    for (const badArticle of badArticles) {
+      await request(app)
+        .post(`/articles`)
+        .send(badArticle)
+        .expect(HttpCode.BAD_REQUEST);
     }
   });
 
@@ -238,8 +285,8 @@ describe(`API changes existent article`, () => {
 
   beforeAll(async () => {
     response = await request(app)
-        .put(`/articles/w8jTa9`)
-        .send(newArticle);
+      .put(`/articles/w8jTa9`)
+      .send(newArticle);
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
@@ -247,8 +294,8 @@ describe(`API changes existent article`, () => {
   test(`Returns changed article`, () => expect(response.body).toEqual(expect.objectContaining(newArticle)));
 
   test(`article is really changed`, () => request(app)
-      .get(`/articles/w8jTa9`)
-      .expect((res) => expect(res.body.title).toBe(`Дам погладить котика`))
+    .get(`/articles/w8jTa9`)
+    .expect((res) => expect(res.body.title).toBe(`Дам погладить котика`))
   );
 
 });
@@ -267,9 +314,9 @@ test(`API returns status code 404 when trying to change non-existent article`, (
   };
 
   return request(app)
-      .put(`/articles/NOEXST`)
-      .send(validArticle)
-      .expect(HttpCode.NOT_FOUND);
+    .put(`/articles/NOEXST`)
+    .send(validArticle)
+    .expect(HttpCode.NOT_FOUND);
 });
 
 test(`API returns status code 400 when trying to change an article with invalid data`, () => {
@@ -285,9 +332,9 @@ test(`API returns status code 400 when trying to change an article with invalid 
   };
 
   return request(app)
-      .put(`/articles/NOEXST`)
-      .send(invalidArticle)
-      .expect(HttpCode.BAD_REQUEST);
+    .put(`/articles/NOEXST`)
+    .send(invalidArticle)
+    .expect(HttpCode.BAD_REQUEST);
 });
 
 describe(`API correctly deletes an article`, () => {
@@ -298,7 +345,7 @@ describe(`API correctly deletes an article`, () => {
 
   beforeAll(async () => {
     response = await request(app)
-        .delete(`/articles/w8jTa9`);
+      .delete(`/articles/w8jTa9`);
   });
 
   test(`Status code 200`, () => expect(response.statusCode).toBe(HttpCode.OK));
@@ -306,8 +353,8 @@ describe(`API correctly deletes an article`, () => {
   test(`Returns deleted article`, () => expect(response.body.id).toBe(`w8jTa9`));
 
   test(`article count is 4 now`, () => request(app)
-      .get(`/articles`)
-      .expect((res) => expect(res.body.length).toBe(11))
+    .get(`/articles`)
+    .expect((res) => expect(res.body.length).toBe(11))
   );
 
 });
@@ -317,8 +364,8 @@ test(`API refuses to delete non-existent article`, () => {
   const app = createAPI();
 
   return request(app)
-      .delete(`/articles/NOEXST`)
-      .expect(HttpCode.NOT_FOUND);
+    .delete(`/articles/NOEXST`)
+    .expect(HttpCode.NOT_FOUND);
 
 });
 
@@ -329,11 +376,11 @@ test(`API refuses to create a comment to non-existent article and returns status
   const app = createAPI();
 
   return request(app)
-      .post(`/articles/NOEXST/comments`)
-      .send({
-        text: `Неважно`
-      })
-      .expect(HttpCode.NOT_FOUND);
+    .post(`/articles/NOEXST/comments`)
+    .send({
+      text: `Неважно`
+    })
+    .expect(HttpCode.NOT_FOUND);
 
 });
 
@@ -342,7 +389,7 @@ test(`API refuses to delete non-existent comment`, () => {
   const app = createAPI();
 
   return request(app)
-      .delete(`/articles/GxdTgz/comments/NOEXST`)
-      .expect(HttpCode.NOT_FOUND);
+    .delete(`/articles/GxdTgz/comments/NOEXST`)
+    .expect(HttpCode.NOT_FOUND);
 
 });
