@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 "use strict";
 
 const {DataTypes, Model} = require(`sequelize`);
@@ -15,11 +16,11 @@ const define = (sequelize) => User.init({
     type: DataTypes.STRING,
     allowNull: false
   },
-  firstName: {
+  first_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  lastName: {
+  last_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -28,6 +29,8 @@ const define = (sequelize) => User.init({
     allowNull: false
   }
 }, {
+  createdAt: false,
+  updatedAt: false,
   sequelize,
   modelName: `User`,
   tableName: `users`
