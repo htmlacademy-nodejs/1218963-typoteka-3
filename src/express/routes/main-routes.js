@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 'use strict';
 
 const {
@@ -6,6 +7,9 @@ const {
 const mainRoutes = new Router();
 const api = require(`../api`).getAPI();
 const OFFERS_PER_PAGE = 8;
+
+const upload = require(`../middlewares/upload`);
+const {prepareErrors} = require(`../../utils`);
 
 mainRoutes.get(`/`, async (req, res) => {
   let {page = 1} = req.query;
@@ -40,5 +44,24 @@ mainRoutes.get(`/search`, async (req, res) => {
 });
 
 mainRoutes.get(`/categories`, (req, res) => res.render(`all-categories`));
+
+mainRoutes.post(`/register`, upload.single(`upload`), async (req, res) => {
+  const {body, file} = req;
+  const userData = {
+    avatar: file ? file.filename : ``,
+    first_name: body[`name`],
+    last_name: body[`surname`],
+    email: body[`email`],
+    password_hash: body[`password`]
+  };
+
+  try {
+    await api.createUser(userData);
+    res.redirect(`/login`);
+  } catch (errors) {
+    const validationMessages = prepareErrors(errors);
+    res.render(`sign-up`, {validationMessages});
+  }
+});
 
 module.exports = mainRoutes;

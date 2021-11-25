@@ -12,10 +12,16 @@ const route = new Router();
 module.exports = (app, service) => {
   app.use(`/user`, route);
 
+  route.get(`/`, async (req, res) => {
+    const users = await service.findAll();
+    res.status(HttpCode.OK)
+      .json(users);
+  });
+
   route.post(`/`, userValidator(service), async (req, res) => {
     const data = req.body;
 
-    data.passwordHash = await passwordUtils.hash(data.password);
+    data.passwordHash = await passwordUtils.hash(data.password_hash);
 
     const result = await service.create(data);
 

@@ -12,7 +12,7 @@ const define = (sequelize) => User.init({
     allowNull: false,
     unique: true
   },
-  passwordHash: {
+  password_hash: {
     type: DataTypes.STRING,
     allowNull: false
   },

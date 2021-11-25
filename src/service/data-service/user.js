@@ -5,6 +5,10 @@ class UserService {
     this._User = sequelize.models.User;
   }
 
+  async findAll() {
+    return this._User.findAll();
+  }
+
   async create(userData) {
     const user = await this._User.create(userData);
     return user.get();
