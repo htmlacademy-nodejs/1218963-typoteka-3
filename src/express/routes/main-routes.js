@@ -49,12 +49,11 @@ mainRoutes.post(`/register`, upload.single(`upload`), async (req, res) => {
   const {body, file} = req;
   const userData = {
     avatar: file ? file.filename : ``,
-    first_name: body[`name`],
-    last_name: body[`surname`],
-    email: body[`email`],
-    password_hash: body[`password`]
+    first_name: body.name,
+    last_name: body.surname,
+    email: body.email,
+    password_hash: body.password
   };
-
   try {
     await api.createUser(userData);
     res.redirect(`/login`);
