@@ -5,7 +5,7 @@ class UserService {
     this._User = sequelize.models.User;
   }
 
-  async findAll() {
+  findAll() {
     return this._User.findAll();
   }
 
