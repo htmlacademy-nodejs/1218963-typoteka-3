@@ -15,10 +15,15 @@ class SearchService {
           [Op.substring]: searchText
         }
       },
-      include: [Aliase.CATEGORIES],
-      order: [
-        [`created_at`, `DESC`]
-      ]
+      include: [Aliase.CATEGORIES,
+        {
+          model: this._User,
+          as: Aliase.USERS,
+          attributes: {
+            exclude: [`passwordHash`]
+          }
+        }
+      ],
     });
     return articles.map((article) => article.get());
   }

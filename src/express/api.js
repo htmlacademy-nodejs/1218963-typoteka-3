@@ -57,6 +57,13 @@ class API {
       data
     });
   }
+
+  createUser(data) {
+    return this._load(`/user`, {
+      method: HttpMethod.POST,
+      data
+    });
+  }
 }
 const TIMEOUT = 1000;
 const port = process.env.API_PORT || 3000;

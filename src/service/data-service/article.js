@@ -25,8 +25,15 @@ class ArticleService {
   }
 
   async findAll() {
-    const include = [];
-    include.push(Aliase.CATEGORIES, Aliase.COMMENTS);
+    const include = [
+      Aliase.CATEGORIES, {
+        model: this._User,
+        as: Aliase.USERS,
+        attributes: {
+          exclude: [`passwordHash`]
+        }
+      },
+      Aliase.COMMENTS];
     const articles = await this._Article.findAll({include});
 
     return articles.map((item) => item.get());

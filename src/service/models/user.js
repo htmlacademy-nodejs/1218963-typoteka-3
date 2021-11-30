@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 "use strict";
 
 const {DataTypes, Model} = require(`sequelize`);
@@ -11,23 +12,30 @@ const define = (sequelize) => User.init({
     allowNull: false,
     unique: true
   },
-  passwordHash: {
+  password_hash: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  firstName: {
+  first_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  lastName: {
+  last_name: {
     type: DataTypes.STRING,
     allowNull: false
   },
   avatar: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  role: {
+    type: DataTypes.STRING,
+    defaultValue: `user`,
+    allowNull: false
   }
 }, {
+  createdAt: `created_at`,
+  updatedAt: false,
   sequelize,
   modelName: `User`,
   tableName: `users`

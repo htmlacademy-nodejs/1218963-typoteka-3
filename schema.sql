@@ -15,7 +15,10 @@ CREATE TABLE users(
   password_hash varchar(255) NOT NULL,
   first_name varchar(255) NOT NULL,
   last_name varchar(255) NOT NULL,
-  avatar varchar(50) NOT NULL
+  avatar varchar(50) NOT NULL,
+  role varchar(5) DEFAULT 'user',
+  created_at timestamp DEFAULT current_timestamp,
+  CHECK(role='user' OR role='admin')
 );
 
 

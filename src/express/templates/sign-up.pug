@@ -10,22 +10,22 @@ block content
         | окно
       h2.popup__title Регистрация
       .popup__form.popup__form--active.form.form--register
-        form(action='#' method='get')
+        form(action='/register' method='POST' enctype="multipart/form-data" autocomplete="off")
           .form__field
             label
-              input(type='email' name='email' placeholder='Электронная почта' required='')
+              input(type='email' name='email' value=email placeholder='Электронная почта' required='')
           .form__field
             label
-              input(type='text' name='name' placeholder='Имя' required='')
+              input(type='text' name='name' value=firstName placeholder='Имя' required='')
           .form__field
             label
-              input(type='text' name='surname' placeholder='Фамилия')
+              input(type='text' name='surname' value=lastName placeholder='Фамилия')
           .form__field
             label
-              input(type='password' name='password' placeholder='Пароль' required='')
+              input(type='password' name='password' value=password placeholder='Пароль' required='')
           .form__field
             label
-              input(type='password' name='repeat-password' placeholder='Повтор пароля' required='')
+              input(type='password' name='repeat-password' value=password placeholder='Повтор пароля' required='')
           .form__validation-error
             p.form__error-message При регистрации произошли ошибки:
             ul.form__errors
@@ -37,4 +37,5 @@ block content
             label
               input.visually-hidden(type='file' name='upload')
               | Загрузить фото профиля
+          +insertErrorMessage(validationMessages)
           button.form__submit-btn.form__submit-btn--register.button.button--colored(type='submit') Зарегистрироваться

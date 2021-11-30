@@ -12,7 +12,8 @@ const ErrorArticleMessage = {
   TITLE_MAX: `Заголовок не может содержать более 100 символов`,
   FULL_TEXT_MIN: `Описание содержит меньше 50 символов`,
   FULL_TEXT_MAX: `Заголовок не может содержать более 1000 символов`,
-  PICTURE: `Изображение не выбрано или тип изображения не поддерживается`
+  PICTURE: `Изображение не выбрано или тип изображения не поддерживается`,
+  USER_ID: `Некорректный идентификатор пользователя`
 };
 
 const schema = Joi.object({
@@ -31,6 +32,9 @@ const schema = Joi.object({
   }),
   picture: Joi.string().required().messages({
     'string.empty': ErrorArticleMessage.PICTURE
+  }),
+  userId: Joi.number().integer().positive().required().messages({
+    'number.base': ErrorArticleMessage.USER_ID
   })
 });
 

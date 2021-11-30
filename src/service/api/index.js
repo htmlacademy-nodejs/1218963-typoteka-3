@@ -8,6 +8,7 @@ const article = require(`../api/article.js`);
 const search = require(`../api/search.js`);
 const comment = require(`../api/comment.js`);
 const allComments = require(`../api/all-comments.js`);
+const user = require(`../api/user.js`);
 const sequelize = require(`../lib/sequelize`);
 const defineModels = require(`../models`);
 
@@ -16,6 +17,7 @@ const {
   ArticleService,
   SearchService,
   CommentService,
+  UserService
 } = require(`../data-service`);
 
 const app = new Router();
@@ -28,6 +30,7 @@ defineModels(sequelize);
   comment(app, new ArticleService(sequelize), new CommentService(sequelize));
   search(app, new SearchService(sequelize));
   allComments(app, new CommentService(sequelize));
+  user(app, new UserService(sequelize));
 })();
 
 module.exports = app;
