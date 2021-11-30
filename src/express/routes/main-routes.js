@@ -39,10 +39,13 @@ mainRoutes.get(`/`, async (req, res) => {
 mainRoutes.get(`/login`, (req, res) => res.render(`login`));
 
 mainRoutes.post(`/login`, async (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const {
+    body
+  } = req;
+  const email = body.email;
+  const password = body.password;
   try {
-    const user = await api.auth({email, password});
+    const user = await api.auth(email, password);
     req.session.user = user;
     req.session.save(() => {
       res.redirect(`/`);

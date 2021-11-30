@@ -10,7 +10,7 @@ block content
         | окно
       h2.popup__title Войти
       .popup__form.form.form--log-in
-        form(action='/login' method='POST' enctype="multipart/form-data")
+        form(action='/login' method='POST')
           .form__field
             label
               input(type='email' name='email' placeholder='Электронная почта' required='')
