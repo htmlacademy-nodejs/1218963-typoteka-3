@@ -37,6 +37,23 @@ mainRoutes.get(`/`, async (req, res) => {
 });
 
 mainRoutes.get(`/login`, (req, res) => res.render(`login`));
+
+mainRoutes.post(`/login`, async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  try {
+    const user = await api.auth({email, password});
+    req.session.user = user;
+    req.session.save(() => {
+      res.redirect(`/`);
+    });
+  } catch (errors) {
+    const validationMessages = prepareErrors(errors);
+    const {user} = req.session;
+    res.render(`login`, {user, validationMessages});
+  }
+});
+
 mainRoutes.get(`/register`, (req, res) => res.render(`sign-up`));
 
 mainRoutes.get(`/search`, async (req, res) => {
@@ -68,7 +85,7 @@ mainRoutes.post(`/register`, upload.single(`upload`), async (req, res) => {
     first_name: body.name,
     last_name: body.surname,
     email: body.email,
-    password_hash: body.password
+    password: body.password
   };
   try {
     await api.createUser(userData);

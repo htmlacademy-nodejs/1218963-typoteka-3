@@ -1,13 +1,23 @@
+/* eslint-disable camelcase */
 'use strict';
 
-const {Router} = require(`express`);
-const {HttpCode} = require(`../constants`);
+const {
+  Router
+} = require(`express`);
+const {
+  HttpCode
+} = require(`../constants`);
 
 const userValidator = require(`../middlewares/user-validator`);
 
 const passwordUtils = require(`../lib/password`);
 
 const route = new Router();
+
+const ErrorAuthMessage = {
+  EMAIL: `Электронный адрес не существует`,
+  PASSWORD: `Неверный пароль`
+};
 
 module.exports = (app, service) => {
   app.use(`/user`, route);
@@ -21,13 +31,35 @@ module.exports = (app, service) => {
   route.post(`/`, userValidator(service), async (req, res) => {
     const data = req.body;
 
-    data.passwordHash = await passwordUtils.hash(data.password_hash);
+    data.password_hash = await passwordUtils.hash(data.password);
 
     const result = await service.create(data);
 
-    delete result.passwordHash;
+    delete result.password_hash;
 
     res.status(HttpCode.CREATED)
       .json(result);
+  });
+
+  route.post(`/auth`, async (req, res) => {
+    const {
+      email,
+      password
+    } = req.body;
+    const user = await service.findByEmail(email);
+
+    if (!user) {
+      res.status(HttpCode.UNAUTHORIZED).send(ErrorAuthMessage.EMAIL);
+      return;
+    }
+
+    const passwordIsCorrect = await passwordUtils.compare(password, user.password_hash);
+
+    if (passwordIsCorrect) {
+      delete user.password_hash;
+      res.status(HttpCode.OK).json(user);
+    } else {
+      res.status(HttpCode.UNAUTHORIZED).send(ErrorAuthMessage.PASSWORD);
+    }
   });
 };
