@@ -24,7 +24,7 @@ const getEditArticlesData = async (articleId) => {
   return [article, categories];
 };
 
-articlesRoutes.get(`/edit/:id`, async (req, res) => {
+articlesRoutes.get(`/edit/:id`, auth, async (req, res) => {
   const {user} = req.session;
 
   const {id} = req.params;
@@ -32,7 +32,7 @@ articlesRoutes.get(`/edit/:id`, async (req, res) => {
   res.render(`articles/edit-post`, {id, article, categories, user});
 });
 
-articlesRoutes.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
+articlesRoutes.post(`/edit/:id`, auth, upload.single(`avatar`), async (req, res) => {
   const {body, file} = req;
   const {id} = req.params;
   const articleData = {
@@ -60,7 +60,7 @@ articlesRoutes.get(`/category/:id`, (req, res) => {
   res.render(`articles-by-category`, {user});
 });
 
-articlesRoutes.post(`/:id/comments`, async (req, res) => {
+articlesRoutes.post(`/:id/comments`, auth, async (req, res) => {
   const {id} = req.params;
   const {comment} = req.body;
   try {
@@ -88,7 +88,7 @@ articlesRoutes.get(`/edit/:id`, auth, async (req, res) => {
   res.render(`edit-post`, {article, user});
 });
 
-articlesRoutes.get(`/:id`, async (req, res) => {
+articlesRoutes.get(`/:id`, auth, async (req, res) => {
   const {user} = req.session;
 
   const {id} = req.params;
@@ -99,6 +99,7 @@ articlesRoutes.get(`/:id`, async (req, res) => {
 
 articlesRoutes.post(`/add`,
     upload.single(`upload`),
+    auth,
     csrfProtection,
     async (req, res) => {
       const {body, file} = req;

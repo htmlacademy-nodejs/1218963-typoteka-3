@@ -12,17 +12,7 @@ const path = require(`path`);
 const PUBLIC_DIR = `public`;
 const UPLOAD_DIR = `upload`;
 
-const sequelize = require(`../service/lib/sequelize`);
-const session = require(`express-session`);
-const SequelizeStore = require(`connect-session-sequelize`)(session.Store);
-
-const mySessionStore = new SequelizeStore({
-  db: sequelize,
-  expiration: 180000,
-  checkExpirationInterval: 60000
-});
-
-sequelize.sync({force: false});
+const {session, mySessionStore} = require(`./middlewares/session`);
 
 app.use(express.urlencoded({extended: false}));
 
