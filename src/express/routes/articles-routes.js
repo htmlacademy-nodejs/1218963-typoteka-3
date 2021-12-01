@@ -3,6 +3,8 @@
 const {Router} = require(`express`);
 const upload = require(`../middlewares/upload`);
 
+const auth = require(`../middlewares/auth`);
+
 const articlesRoutes = new Router();
 const api = require(`../api`).getAPI();
 const {ensureArray, prepareErrors} = require(`../../utils`);
@@ -20,9 +22,11 @@ const getEditArticlesData = async (articleId) => {
 };
 
 articlesRoutes.get(`/edit/:id`, async (req, res) => {
+  const {user} = req.session;
+
   const {id} = req.params;
   const [article, categories] = await getEditArticlesData(id);
-  res.render(`articles/edit-post`, {id, article, categories});
+  res.render(`articles/edit-post`, {id, article, categories, user});
 });
 
 articlesRoutes.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
@@ -47,7 +51,11 @@ articlesRoutes.post(`/edit/:id`, upload.single(`avatar`), async (req, res) => {
   }
 });
 
-articlesRoutes.get(`/category/:id`, (req, res) => res.render(`articles-by-category`));
+articlesRoutes.get(`/category/:id`, (req, res) => {
+  const {user} = req.session;
+
+  res.render(`articles-by-category`, {user});
+});
 
 articlesRoutes.post(`/:id/comments`, async (req, res) => {
   const {id} = req.params;
@@ -62,21 +70,27 @@ articlesRoutes.post(`/:id/comments`, async (req, res) => {
   }
 });
 
-articlesRoutes.get(`/add`, async (req, res) => {
+articlesRoutes.get(`/add`, auth, async (req, res) => {
+  const {user} = req.session;
+
   const categories = await api.getCategories();
-  res.render(`new-post`, {categories});
+  res.render(`new-post`, {categories, user});
 });
 
-articlesRoutes.get(`/edit/:id`, async (req, res) => {
+articlesRoutes.get(`/edit/:id`, auth, async (req, res) => {
+  const {user} = req.session;
+
   const {id} = req.params;
   const article = await api.getArticle(id);
-  res.render(`edit-post`, {article});
+  res.render(`edit-post`, {article, user});
 });
 
 articlesRoutes.get(`/:id`, async (req, res) => {
+  const {user} = req.session;
+
   const {id} = req.params;
   const article = await getViewArticleData(id);
-  res.render(`post`, {article, id});
+  res.render(`post`, {article, id, user});
 });
 
 

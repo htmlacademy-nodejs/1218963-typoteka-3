@@ -6,16 +6,23 @@ const {
 const myRoutes = new Router();
 const api = require(`../api`).getAPI();
 
-myRoutes.get(`/`, async (req, res) => {
+const auth = require(`../middlewares/auth`);
+
+myRoutes.get(`/`, auth, async (req, res) => {
+  const {user} = req.session;
+
   const articles = await api.getArticles();
   res.render(`my`, {
-    articles
+    articles,
+    user
   });
 });
 
-myRoutes.get(`/comments`, async (req, res) => {
+myRoutes.get(`/comments`, auth, async (req, res) => {
+  const {user} = req.session;
+
   const comments = await api.getComments();
-  res.render(`comments`, {comments});
+  res.render(`comments`, {comments, user});
 });
 
 module.exports = myRoutes;

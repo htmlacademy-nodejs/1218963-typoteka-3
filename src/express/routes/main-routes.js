@@ -7,6 +7,7 @@ const {
 const mainRoutes = new Router();
 const api = require(`../api`).getAPI();
 const OFFERS_PER_PAGE = 8;
+const auth = require(`../middlewares/auth`);
 
 const upload = require(`../middlewares/upload`);
 const {
@@ -14,6 +15,9 @@ const {
 } = require(`../../utils`);
 
 mainRoutes.get(`/`, async (req, res) => {
+  const {
+    user
+  } = req.session;
   let {
     page = 1
   } = req.query;
@@ -32,11 +36,16 @@ mainRoutes.get(`/`, async (req, res) => {
   res.render(`main`, {
     articles,
     page,
-    totalPages
+    totalPages,
+    user
   });
 });
 
-mainRoutes.get(`/login`, (req, res) => res.render(`login`));
+mainRoutes.get(`/login`, (req, res) => {
+  const {user} = req.session;
+
+  res.render(`login`, {user});
+});
 
 mainRoutes.post(`/login`, async (req, res) => {
   const {
@@ -52,14 +61,21 @@ mainRoutes.post(`/login`, async (req, res) => {
     });
   } catch (errors) {
     const validationMessages = prepareErrors(errors);
-    const {user} = req.session;
-    res.render(`login`, {user, validationMessages});
+    res.render(`login`, {
+      validationMessages
+    });
   }
 });
 
-mainRoutes.get(`/register`, (req, res) => res.render(`sign-up`));
+mainRoutes.get(`/register`, (req, res) => {
+  const {user} = req.session;
+
+  res.render(`sign-up`, {user});
+});
 
 mainRoutes.get(`/search`, async (req, res) => {
+  const {user} = req.session;
+
   try {
     const {
       query
@@ -67,7 +83,8 @@ mainRoutes.get(`/search`, async (req, res) => {
     const results = await api.search(query);
 
     res.render(`search`, {
-      results
+      results,
+      user
     });
   } catch (error) {
     res.render(`search-empty`, {
@@ -76,7 +93,11 @@ mainRoutes.get(`/search`, async (req, res) => {
   }
 });
 
-mainRoutes.get(`/categories`, (req, res) => res.render(`all-categories`));
+mainRoutes.get(`/categories`, auth, (req, res) => {
+  const {user} = req.session;
+
+  res.render(`all-categories`, {user});
+});
 
 mainRoutes.post(`/register`, upload.single(`upload`), async (req, res) => {
   const {
@@ -103,6 +124,11 @@ mainRoutes.post(`/register`, upload.single(`upload`), async (req, res) => {
       password: body.password || ``
     });
   }
+});
+
+mainRoutes.get(`/logout`, (req, res) => {
+  delete req.session.user;
+  res.redirect(`/`);
 });
 
 module.exports = mainRoutes;
