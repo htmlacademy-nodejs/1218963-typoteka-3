@@ -3,6 +3,9 @@
 const {Router} = require(`express`);
 const upload = require(`../middlewares/upload`);
 
+const csrf = require(`csurf`);
+const csrfProtection = csrf();
+
 const auth = require(`../middlewares/auth`);
 
 const articlesRoutes = new Router();
@@ -70,11 +73,11 @@ articlesRoutes.post(`/:id/comments`, async (req, res) => {
   }
 });
 
-articlesRoutes.get(`/add`, auth, async (req, res) => {
+articlesRoutes.get(`/add`, auth, csrfProtection, async (req, res) => {
   const {user} = req.session;
 
   const categories = await api.getCategories();
-  res.render(`new-post`, {categories, user});
+  res.render(`new-post`, {categories, user, csrfToken: req.csrfToken()});
 });
 
 articlesRoutes.get(`/edit/:id`, auth, async (req, res) => {
@@ -96,6 +99,7 @@ articlesRoutes.get(`/:id`, async (req, res) => {
 
 articlesRoutes.post(`/add`,
     upload.single(`upload`),
+    csrfProtection,
     async (req, res) => {
       const {body, file} = req;
       const articleData = {
