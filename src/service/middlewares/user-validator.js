@@ -22,7 +22,7 @@ const schema = Joi.object({
   email: Joi.string().email().required().messages({
     'string.email': ErrorRegisterMessage.EMAIL
   }),
-  password_hash: Joi.string().min(6).required().messages({
+  password: Joi.string().min(6).required().messages({
     'string.min': ErrorRegisterMessage.PASSWORD
   }),
   avatar: Joi.string().required().messages({
