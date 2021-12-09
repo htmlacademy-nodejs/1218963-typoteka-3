@@ -30,11 +30,13 @@ mainRoutes.get(`/`, async (req, res) => {
     count,
     articles
   } = await api.getArticles(limit, offset);
+  const categories = await api.getCategories();
 
   const totalPages = Math.ceil(count / OFFERS_PER_PAGE);
 
   res.render(`main`, {
     articles,
+    categories,
     page,
     totalPages,
     user
@@ -93,10 +95,11 @@ mainRoutes.get(`/search`, async (req, res) => {
   }
 });
 
-mainRoutes.get(`/categories`, auth, (req, res) => {
+mainRoutes.get(`/categories`, auth, async (req, res) => {
   const {user} = req.session;
+  const categories = await api.getCategories();
 
-  res.render(`all-categories`, {user});
+  res.render(`all-categories`, {user, categories});
 });
 
 mainRoutes.post(`/register`, upload.single(`upload`), async (req, res) => {
