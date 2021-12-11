@@ -17,7 +17,7 @@ class CategoryService {
   async findOne(categoryId) {
     return this._Category.findByPk(categoryId);
   }
-  async findPage(categoryId) {
+  async findPage(categoryId, limit, offset) {
     const include = [
       Aliase.CATEGORIES
     ];
@@ -26,17 +26,36 @@ class CategoryService {
       include
     });
 
-    const articlesByCategory = [];
+    const articlesIdByCategory = [];
 
     articles.map((article) => {
       article.categories.map((category) => {
         if (category.id == categoryId) {
-          articlesByCategory.push(article);
+          articlesIdByCategory.push(article.id);
         }
       });
     });
 
-    return articlesByCategory;
+
+    const {
+      count,
+      rows
+    } = await this._Article.findAndCountAll({
+      limit,
+      offset,
+      include: [
+        Aliase.CATEGORIES,
+      ],
+      where: {
+        id: articlesIdByCategory
+      },
+      distinct: true
+    });
+
+    return {
+      count,
+      articlesByCategory: rows
+    };
   }
 }
 
