@@ -19,13 +19,18 @@ module.exports = (app, service) => {
   });
 
   route.get(`/:categoryId`, async (req, res) => {
-    const {categoryId} = req.params;
+    const {
+      categoryId
+    } = req.params;
+    const {limit, offset} = req.query;
 
     const category = await service.findOne(categoryId);
+    const articlesByCategory = await service.findPage(categoryId, limit, offset);
 
     res.status(HttpCode.OK)
       .json({
-        category
+        category,
+        articlesByCategory
       });
   });
 };
